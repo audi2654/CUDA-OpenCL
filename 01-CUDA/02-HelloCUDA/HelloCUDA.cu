@@ -1,8 +1,15 @@
 //26/03/2022
 //HPP CUDA Program to show execution of CUDA Kernel on GPU by calling from Host & simple Vector Addtion on GPU
 
-//cmd : nvcc HelloCUDA.c or .cu -o HelloCUDA
+//cmd : nvcc -o HelloCUDA --gpu-architecture=sm_50 HelloCUDA.cu
+//	OR: nvcc -o HelloCUDA -arch=native HelloCUDA.cu
+//	OR: nvcc -o HelloCUDA -arch=sm_50 HelloCUDA.cu
 
+//sm is Streaming Multiprocessor also referred as Compute Capability
+//NVIDIA GeForce 940MX is a Maxwell Compute Architecture having compute capability of 5.0 i.e sm_50
+//Maxwell is deprecated (but supported) from CUDA 11.6 onwards
+
+//standard headers
 #include <stdio.h>
 
 //cuda headers
@@ -21,7 +28,9 @@ float* deviceInput1 = NULL;
 float* deviceInput2 = NULL;
 float* deviceOutput = NULL;
 
-//CUDA kernel
+//CUDA kernel vecAddGPU()
+//in HPP, the kernel runs equal to the no. of threads. Thread is just an entity that carries some 
+//function(CUDA kernel function here) to execute. So every thread has a copy of kernel for its own use & execution
 
 //below func will run on GPU device but will b called from Host CPU Device
 
