@@ -28,7 +28,7 @@ void printOpenCLDeviceProperties(void)
     //var decl.
     cl_int result = 0;
     cl_platform_id ocl_platform_id = NULL;
-    cl_uint dev_count = 0;
+    cl_uint dev_count ;
     cl_device_id* ocl_device_ids = NULL;
     char oclPlatformInfo[512];
 
@@ -36,13 +36,23 @@ void printOpenCLDeviceProperties(void)
     printf("OpenCL INFORMATION\n");
     printf("=============================================================================================\n");
     
+    //get first platform ID
     result = clGetPlatformIDs(1, &ocl_platform_id, NULL);
-    if(result != CL_SUCCESS)
+    if (result != CL_SUCCESS)
     {
         printf("OpenCL Runtime API Error - clGetPlatformIDs() failed\n");
         exit(EXIT_FAILURE);
     }
-    else if(dev_count < 0)
+
+    //get GPU device count
+    result = clGetDeviceIDs(ocl_platform_id, CL_DEVICE_TYPE_GPU, 0, NULL, &dev_count);
+    if (result != CL_SUCCESS)
+    {
+        printf("OpenCL Runtime API Error - clGetDeviceIDs() failed\n");
+        exit(EXIT_FAILURE);
+    }
+    
+    else if(dev_count == 0)
     {
         printf("There is no OpenCL supported device on this system %u\n", dev_count);
         exit(EXIT_FAILURE);
@@ -87,7 +97,7 @@ void printOpenCLDeviceProperties(void)
         char ocl_dev_prop[1024];
         int i = 0;
         
-        //for(i = 0; i <= (int)dev_count; i++)
+        for(i = 0; i < (int)dev_count; i++)
         {
             printf("\n");
             printf("=============================================================================================\n");
