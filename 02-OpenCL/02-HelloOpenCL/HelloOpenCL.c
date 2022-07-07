@@ -195,7 +195,7 @@ int main(void)
 	}
 
 	//set 0 based 1st argument of kernel i.e deviceInput2
-	result = clSetKernelArg(oclKernel, 0, sizeof(cl_mem), (void*)&deviceInput2);
+	result = clSetKernelArg(oclKernel, 1, sizeof(cl_mem), (void*)&deviceInput2);
 	if (result != CL_SUCCESS)
 	{
 		printf("clSetKernelArg() failed for 2nd argument : %d\n", result);
@@ -204,7 +204,7 @@ int main(void)
 	}
 
 	//set 0 based 2nd argument of kernel i.e deviceOutput
-	result = clSetKernelArg(oclKernel, 0, sizeof(cl_mem), (void*)&deviceOutput);
+	result = clSetKernelArg(oclKernel, 2, sizeof(cl_mem), (void*)&deviceOutput);
 	if (result != CL_SUCCESS)
 	{
 		printf("clSetKernelArg() failed for 3rd argument : %d\n", result);
@@ -213,7 +213,7 @@ int main(void)
 	}
 
 	//set 0 based 3rd argument of kernel i.e len
-	result = clSetKernelArg(oclKernel, 0, sizeof(cl_mem), (void*)&iNumberOfArrayElements);
+	result = clSetKernelArg(oclKernel, 3, sizeof(cl_int), (void*)&iNumberOfArrayElements);
 	if (result != CL_SUCCESS)
 	{
 		printf("clSetKernelArg() failed for 4th argument : %d\n", result);
