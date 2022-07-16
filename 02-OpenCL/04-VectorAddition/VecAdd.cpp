@@ -329,8 +329,8 @@ int main(int argc, char* argv[])
 	printf("Output Array begins from 0th index %.6f to %dth index %.6f\n", hostOutput[0], iNumberOfArrayElements - 1, hostOutput[iNumberOfArrayElements - 1]);
 
 	printf("\n");
-	printf("Time taken for Matrix Multiplication on CPU = %.6f\n", timeOnCPU);
-	printf("Time taken for Matrix Multiplication on GPU = %.6f\n", timeOnGPU);
+	printf("Time taken for Vector Addition on CPU = %.6f\n", timeOnCPU);
+	printf("Time taken for Vector Addition on GPU = %.6f\n", timeOnGPU);
 	printf("%s\n", str);
 
 	//cleanup
