@@ -1,8 +1,9 @@
 //26/03/2022
 //HPP OpenCL Program to show Matrix Multiplication on GPU
 
-//cmd : cl.exe /c /EHsc /I "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include" MatMul.cpp
-//      link.exe MatMul.obj /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64" opencl.lib
+//cmd : 
+//cl.exe /c /EHsc /I "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include" MatMul.cpp
+//link.exe MatMul.obj /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64" opencl.lib
 
 //headers
 //standard headers
@@ -149,7 +150,7 @@ int main(int argc, char* argv[])
 
 	printf("\nALL GOOD till line number : %d\n", __LINE__);
 
-	//get OpenCL supporting CPU device's ID
+	//get OpenCL supporting GPU device's ID
 	result = clGetDeviceIDs(oclPlatformID, CL_DEVICE_TYPE_GPU, 1, &oclDeviceID, NULL);
 	if (result != CL_SUCCESS)
 	{
@@ -168,6 +169,8 @@ int main(int argc, char* argv[])
 	}
 
 	//create command queue
+	//if old graphics card & not supported to OpenCL 2.0, use clCreateCommandQueue()
+	//for OpenCL 2.0, use clCreateCommandQueueWithProperties()
 	oclCommandQueue = clCreateCommandQueue(oclContext, oclDeviceID, 0, &result);
 	if (result != CL_SUCCESS)
 	{
@@ -176,7 +179,7 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	//create OpenCL program from .cl
+	//create OpenCL program from openCL kernel source code .cl
 	oclProgram = clCreateProgramWithSource(oclContext, 1, (const char**)&oclSourceCode, NULL, &result);
 	if (result != CL_SUCCESS)
 	{
@@ -186,6 +189,7 @@ int main(int argc, char* argv[])
 	}
 
 	//build OpenCL program
+	//4th para below is for cmd line para to compiler, you can use "-cl-fast-relaxed-math" instead of NULL
 	result = clBuildProgram(oclProgram, 0, NULL, NULL, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
@@ -322,6 +326,7 @@ int main(int argc, char* argv[])
 	sdkCreateTimer(&timer);
 	sdkStartTimer(&timer);
 
+	//in ND, N stands for n dimension or times, here were doing globalWorkSize times i.e BLOCK_WIDTH * BLOCK_WIDTH work so 2D workload 
 	result = clEnqueueNDRangeKernel(oclCommandQueue, oclKernel, 2, NULL, globalWorkSize, NULL, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
