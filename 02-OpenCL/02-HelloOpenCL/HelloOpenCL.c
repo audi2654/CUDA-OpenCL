@@ -1,8 +1,9 @@
 //26/03/2022
 //HPP OpenCL Program to show execution of OpenCL Kernel on GPU by calling from Host & simple Vector Addtion on GPU
 
-//cmd : cl.exe /c /EHsc /I "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include" HelloOpenCL.c
-//      link.exe HelloOpenCL.obj /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64" opencl.lib
+//cmd : 
+//cl.exe /c /EHsc /I "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\include" HelloOpenCL.c
+//link.exe HelloOpenCL.obj /LIBPATH:"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\lib\x64" opencl.lib
 
 //headers
 //standard headers
@@ -102,7 +103,7 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	//get OpenCL supporting CPU device's ID
+	//get OpenCL supporting GPU device's ID
 	result = clGetDeviceIDs(oclPlatformID, CL_DEVICE_TYPE_GPU, 1, &oclDeviceID, NULL);
 	if (result != CL_SUCCESS)
 	{
@@ -121,6 +122,8 @@ int main(void)
 	}
 
 	//create command queue
+	//if old graphics card & not supported to OpenCL 2.0, use clCreateCommandQueue()
+	//for OpenCL 2.0, use clCreateCommandQueueWithProperties()
 	oclCommandQueue = clCreateCommandQueue(oclContext, oclDeviceID, 0, &result);
 	if (result != CL_SUCCESS)
 	{
@@ -129,7 +132,7 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	//create OpenCL program from .cl
+	//create OpenCL program from openCL kernel source code .cl
 	oclProgram = clCreateProgramWithSource(oclContext, 1, (const char**)&oclSourceCode, NULL, &result);
 	if (result != CL_SUCCESS)
 	{
@@ -139,6 +142,7 @@ int main(void)
 	}
 
 	//build OpenCL program
+	//4th para below is for cmd line para to compiler, you can use "-cl-fast-relaxed-math" instead of NULL
 	result = clBuildProgram(oclProgram, 0, NULL, NULL, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
@@ -241,6 +245,7 @@ int main(void)
 	//kernel configuration
 	size_t global_size = 5;		//1D 5 element array operation
 
+	//in ND, N stands for n dimension or times, here were doing global_size times work i.e 5 times so 1D workload 
 	result = clEnqueueNDRangeKernel(oclCommandQueue, oclKernel, 1, NULL, &global_size, NULL, 0, NULL, NULL);
 	if (result != CL_SUCCESS)
 	{
